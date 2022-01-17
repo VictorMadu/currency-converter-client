@@ -1,9 +1,9 @@
 
-type NavItemProps= {
+type ItemProps= {
   children: string | JSX.Element
 }
 
-const NavItem = (props: NavItemProps) => {
+const Item = (props: ItemProps) => {
   return (
     <li className="inline-block cursor-pointer">
       {props.children}
@@ -11,4 +11,4 @@ const NavItem = (props: NavItemProps) => {
   )
 }
 
-export default NavItem
+export default Item

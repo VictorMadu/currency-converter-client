@@ -2,10 +2,13 @@ import {
   UserIcon,
   LockClosedIcon,
 } from "@heroicons/react/outline";
+import { useState } from "react";
 import AuthForm from "../auth-form";
 import { IBase } from "./types";
 
-const SignIn: IBase = () => {
+const Login: IBase = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   return (
     <AuthForm>
       <AuthForm.Title text="Erate" />
@@ -14,25 +17,25 @@ const SignIn: IBase = () => {
           Icon={UserIcon}
           id={"email"}
           placeholder={"Email"}
-          Input={<AuthForm.BaseInput type="email" id={"email"} />}
+          Input={<AuthForm.BaseInput type="email" id={"email"} value={email} onInputChange={setEmail}  />}
         />
 
         <AuthForm.InputGroup
           Icon={LockClosedIcon}
           id={"password"}
           placeholder={"Password"}
-          Input={<AuthForm.BaseInput type="email" id={"email"} />}
+          Input={<AuthForm.PwdInput id={"password"} value={password} onInputChange={setPassword} />}
         />
       </div>
-      <AuthForm.SubmitBtn text="Sign In" />
+      <AuthForm.SubmitBtn text="Sign In"  />
     </AuthForm>
   );
 };
 
-SignIn.title = "Sign In";
-SignIn.footer = {
+Login.title = "Log In";
+Login.footer = {
   text: "Have an account already",
   onClick: () => {}
 }
 
-export default SignIn;
+export default Login;

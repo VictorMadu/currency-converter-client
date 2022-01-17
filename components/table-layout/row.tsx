@@ -10,7 +10,7 @@ export interface IRow {
 
 const Row: IRow = (props) => {
   return (
-    <div className="flex items-center border-b border-neutral-500/30 px-[3%] py-2 gap-x-[3%]">
+    <div className="flex items-center border-b border-neutral-500/30 px-[3%] py-2.5 gap-x-[3%]">
       {props.children}
     </div>
   );

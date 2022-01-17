@@ -1,6 +1,7 @@
 import { OrWithArr } from "../../types";
-import Dropdown, { ICurrencyProps } from "./_dropdown";
-import Input, { IInput } from "./_input";
+import Dropdown, { IDropdownProp } from "./_dropdown";
+import DropdownContainer, { IDropdownContainerProps } from "./_dropdown-container";
+import Input, { IInputProps } from "./_input";
 
 interface ICurrencyFormProps {
   children: OrWithArr<JSX.Element>
@@ -8,12 +9,13 @@ interface ICurrencyFormProps {
 
 interface ICurrencyForm {
   (props: ICurrencyFormProps): JSX.Element;
-  Dropdown: (props: ICurrencyProps) => JSX.Element;
-  Input: (props: IInput) => JSX.Element;
+  Input: (props: IInputProps) => JSX.Element,
+  Dropdown: (props: IDropdownProp) => JSX.Element;
+  DropdownContainer: (props: IDropdownContainerProps) => JSX.Element
 }
 
 
-const CurrencyForm: ICurrencyForm = (props)  =>   {
+const CurrencyForm:ICurrencyForm = (props)  =>   {
   return (
     <div className="w-full flex flex-col items-center gap-y-4">
       {props.children}
@@ -27,6 +29,8 @@ const CurrencyForm: ICurrencyForm = (props)  =>   {
 
 CurrencyForm.Dropdown = Dropdown;
 CurrencyForm.Input = Input;
+CurrencyForm.Dropdown = Dropdown;
+CurrencyForm.DropdownContainer = DropdownContainer;
 
 
 export default CurrencyForm

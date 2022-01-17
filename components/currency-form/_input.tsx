@@ -1,22 +1,15 @@
-import classNames from "classnames";
+import { ChangeEvent } from "react";
 
-export type IInput = {
-  id: string;
-  placeholder?: string;
-  styleWidth?: string;
-};
+export interface IInputProps {
+  value: string;
+  onInputChange: (event: ChangeEvent<HTMLInputElement>) => void
+}
 
-const Input = (props: IInput) => {
+const Input = (props: IInputProps) => {
   return (
-   <label htmlFor={props.id} className="flex flex-col items-end ml-auto gap-y-1.5">
-     {!!props.placeholder && <span className="uppercase font-[Roboto] text-xs text-neutral-900/30">{props.placeholder + ":"}</span>}
-      <input
-      id={props.id}
-      type="text"
-      className={classNames("px-1 py-0.5 focus:outline-none rounded border border-transparent shadow-inner bg-neutral-300 ring-1 ring-transparent focus:ring-neutral-500/30 transition duration-300", props.styleWidth)}
-      // placeholder={props.placeholder}
-    />
-   </label>
+    <div className="w-1/2 ml-auto p-2">
+      <input className="w-full px-2 py-1.5 overflow-hidden block focus:outline-none bg-neutral-300 shadow-inner rounded-lg" onChange={props.onInputChange} value={props.value} onClick={(event) => event.stopPropagation()} />
+    </div>
   );
 };
 

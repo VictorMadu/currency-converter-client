@@ -1,31 +1,40 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
+import { useState } from "react";
 import BaseInput from "./_base-input";
 
 export interface IPwdInputProps {
   id: string;
-  // onChange: VoidFunc
+  value: string;
+  onInputChange: (value: string) => void;
 }
-
 
 const PwdInput = (props: IPwdInputProps) => {
-  const isHidden = true;
-  const Icon = isHidden ? EyeIcon : EyeOffIcon
+  const [isHidden, setIsHidden] = useState(true);
+  const Icon = isHidden ? EyeIcon : EyeOffIcon;
   return (
     <div className="relative w-full">
-      <BaseInput id={props.id} type={isHidden ? "password" : "text"} padding="py-1 pl-2 pr-8" />
-      <Icon className="absolute w-4 h-4 top-1/2 -translate-y-1/2 right-2" />
+      <BaseInput
+        id={props.id}
+        type={isHidden ? "password" : "text"}
+        padding="py-1 pl-2 pr-8"
+        value={props.value}
+        onInputChange={props.onInputChange}
+      />
+      <Icon
+        className="absolute w-4 h-4 top-1/2 -translate-y-1/2 right-2"
+        onClick={() => setIsHidden((isHidden) => !isHidden)}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default PwdInput;
-
 
 // import { VoidFunc } from "../../types";
 
 // export interface IBaseInputProps {
 //   id: string;
-//   type?: "text" | "password" | "tel" | "email" 
+//   type?: "text" | "password" | "tel" | "email"
 //   // onChange: VoidFunc
 // }
 
