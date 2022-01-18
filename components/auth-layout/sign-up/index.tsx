@@ -1,16 +1,20 @@
-import { UserIcon, LockClosedIcon } from "@heroicons/react/outline";
+import {
+  UserIcon,
+  DeviceMobileIcon,
+  LockClosedIcon,
+} from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { loginUser } from "../../api";
-import AuthForm from "../auth-form";
-import { IBase, TYPES } from "./types";
-import {useDispatch} from 'react-redux';
-import { setUserDetails } from "../../redux/user/user.actions";
+import { signUpUser } from "../../../api";
+import AuthForm from "../../auth-form";
+import { IBase, TYPES } from "../types";
 
-const Login: IBase = () => {
+const SignUp: IBase = () => {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch =  useDispatch();
+
+  const router = useRouter();
 
   return (
     <AuthForm>
@@ -29,7 +33,22 @@ const Login: IBase = () => {
             />
           }
         />
-
+        <AuthForm.InputGroup
+          Icon={DeviceMobileIcon}
+          id={"tel"}
+          placeholder={"Phone"}
+          Input={
+            <AuthForm.BaseInput
+              type="tel"
+              id={"phone"}
+              value={phone}
+              onInputChange={(value: string) => {
+                if (!/^\d{0,11}$/.test(value)) return;
+                setPhone(value);
+              }}
+            />
+          }
+        />
         <AuthForm.InputGroup
           Icon={LockClosedIcon}
           id={"password"}
@@ -44,19 +63,10 @@ const Login: IBase = () => {
         />
       </div>
       <AuthForm.SubmitBtn
-        text="Sign In"
+        text="Sign Up"
         handleClick={() => {
-          Promise.resolve(loginUser(email, password)).then((data) => {
-            if (!data) return; // handle error
-            dispatch(setUserDetails(data))
-            
-
-            // if (!localStorage) return;
-            // localStorage.setItem("id", data.id);
-            // localStorage.setItem("email", data.email);
-            // localStorage.setItem("phone", data.phone);
-            // localStorage.setItem("token", data.token);
-            // router.push(`/`);
+          signUpUser(email, phone, password).then((data) => {
+            if (data) router.push(`/auth/${TYPES.LOGIN}`);
           });
         }}
       />
@@ -64,10 +74,10 @@ const Login: IBase = () => {
   );
 };
 
-Login.title = "Log In";
-Login.footer = {
-  text: "Have an account already",
-  route: TYPES.SIGN_UP,
+SignUp.title = "Sign Up";
+SignUp.footer = {
+  text: "Don't have an account yet",
+  route: TYPES.LOGIN
 };
 
-export default Login;
+export default SignUp;

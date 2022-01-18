@@ -1,7 +1,7 @@
 import {createContext, Dispatch, useContext} from "react";
 import { ICurrenciesAlertsRes } from "../../../api/_dtypes";
 import { VoidFunc } from "../../../types";
-import { defaultState, IAction } from "./use-data";
+import { initialState, IAction } from "./use-data";
 
 interface ICurrenciesAlertProvider {
   children: JSX.Element;
@@ -11,7 +11,7 @@ interface ICurrenciesAlertProvider {
   ]
 }
 
-const CurrenciesAlertContext = createContext<ICurrenciesAlertProvider["value"]>([defaultState , () => { throw new Error("useCurrenciesAlertContext must be used within a CurrenciesAlertProvider")}]);
+const CurrenciesAlertContext = createContext<ICurrenciesAlertProvider["value"]>([initialState , () => { throw new Error("useCurrenciesAlertContext must be used within a CurrenciesAlertProvider")}]);
 
 export function CurrenciesAlert(props: ICurrenciesAlertProvider) {
   return (

@@ -6,12 +6,13 @@ interface NavItemProps {
   text: string;
   path: string;
   className?: string;
+  onClick?: () => void
 }
 
 const NavItem = (props: NavItemProps) => {
   return (
     <Item>
-      <NavLink href={props.path} className={props.className}>
+      <NavLink href={props.path} className={props.className} onClick={props.onClick}>
           {props.text}
       </NavLink>
     </Item>

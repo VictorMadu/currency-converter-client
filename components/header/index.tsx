@@ -1,10 +1,16 @@
+import { useEffect, useState } from "react";
 import { TYPES } from "../auth-layout/types";
 import Item from "../item";
 import NavLink from "../nav-link";
 import NavItem from "./nav-item";
 
 const Header = () => {
-  const isLoggedIn = false;
+  
+  const [token, setToken] = useState<string | null>('');
+  useEffect(() => {
+    localStorage && setToken(localStorage.getItem("token"))
+  }, [])
+  
   return (
     <header className="flex justify-between items-end py-2 border-b border-neutral-500/30 px-[2%]">
       <NavLink href="/">
@@ -15,10 +21,13 @@ const Header = () => {
           <NavItem path="/alerts" text="Alerts" />
           <NavItem path="/settings" text="Settings" />
 
-          {isLoggedIn ? (
+          {!!token ? (
             <>
             {/* TODO: Delete all users storage and disconnect websocket */}
-              <NavItem path="/" text="Log out" />
+              <NavItem path="/" text="Log out" onClick={() => {
+                localStorage && localStorage.clear()
+                setToken(null)
+              }} />
             </>
           ) : (
             <>

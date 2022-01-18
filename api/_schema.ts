@@ -105,3 +105,41 @@ export const currenciesalertSchema = {
   required: ["success", "data"],
   additionalProperties: false,
 } as const;
+
+export const signUpSchema = {
+  type: "object",
+  properties: {
+    success: { type: "boolean" },
+    data: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        createdTime: { type: "number" },
+      },
+      required: ["id", "createdTime"],
+      additionalProperties: false,
+    },
+  },
+  required: ["success"],
+  additionalProperties: false,
+} as const;
+
+export const loginSchema = {
+  type: "object",
+  properties: {
+    success: { type: "boolean" },
+    data: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        email: { type: "string" },
+        phone: { type: "string" },
+        token: { type: "string" },
+      },
+      required: ["id", "email", "phone", "token"],
+      additionalProperties: false,
+    },
+  },
+  required: ["success"],
+  additionalProperties: false,
+} as const;

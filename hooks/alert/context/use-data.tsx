@@ -22,10 +22,10 @@ const internalReducer = (
   }
 };
 
-export const defaultState: ICurrenciesAlertsRes["data"] = [];
+export const initialState: ICurrenciesAlertsRes["data"] = [];
 
 export function useCurrenciesAlert(
-  initial: ICurrenciesAlertsRes["data"] = defaultState,
+  initial: ICurrenciesAlertsRes["data"] = initialState,
   reducer = internalReducer
 ) {
   const [state, dispatch] = useReducer(reducer, initial);

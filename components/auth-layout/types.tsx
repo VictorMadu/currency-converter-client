@@ -5,7 +5,7 @@ export interface IBase {
   title: string;
   footer: {
     text: string;
-    onClick: VoidFunc;
+    route: string;
   }
 } 
 

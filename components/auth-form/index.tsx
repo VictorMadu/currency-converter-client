@@ -16,7 +16,7 @@ interface IAuthForm {
   Title: (props: ITitleProps) => JSX.Element;
   InputGroup: (props: IInputGroupProps) => JSX.Element;
   PwdInput: (props: IPwdInputProps) => JSX.Element;
-
+  
 }
 
 const AuthForm: IAuthForm = (props) => {
