@@ -2,30 +2,50 @@ import CurrencyForm from "../currency-form";
 import { findIndex, map, filter, isEqual } from "lodash";
 import DropItem from "./drop-item";
 import { getCurrencyPrices } from "../../api";
-import { useState } from "react";
-import { defaultState, useCurrencyContext } from "../../hooks/currency/context";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectBaseCurrencyIndex,
+  selectCurrencyPairs,
+} from "../../redux/currencies/currencies.selectors";
+import { fetchCurrenciesStart } from "../../redux/currencies/currencies.actions";
+// import { defaultState, useCurrencyContext } from "../../hooks/currency/context";
 
 const ControlSection = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [currencyData, dispatch] = useCurrencyContext();
+  const currencyPairs = useSelector(selectCurrencyPairs);
+  const baseCurrencyIndex = useSelector(selectBaseCurrencyIndex);
+  const dispatch  = useDispatch()
 
-  const isDefaultCurrencyData = isEqual(currencyData,defaultState);
+  const baseShortName =
+    baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].short : "";
 
-  const baseCurrencyShortName = currencyData.base;
-  const baseCurrencyIndex = findIndex(
-    currencyData.currencies,
-    (currency) => currency.short === baseCurrencyShortName
-  );
-  const baseCurrencyLongName = isDefaultCurrencyData ? '' : currencyData.currencies[baseCurrencyIndex].name;
+  const baseLongName =
+    baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].name : "";
 
-  const handleClick = (currency: string) => {
-    getCurrencyPrices(currency).then(
-      (data) => {
-        if (data === undefined) return {} // handle it
-        dispatch && dispatch({ type: "update", payload: data })
-      }
-    );
-  };
+  // const [currencyData, dispatch] = useCurrencyContext();
+  // const isDefaultCurrencyData = isEqual(currencyData,defaultState);
+
+  // const baseCurrencyShortName = currencyData.base;
+  // const baseCurrencyIndex = findIndex(
+  //   currencyData.currencies,
+  //   (currency) => currency.short === baseCurrencyShortName
+  // );
+  // const baseCurrencyLongName = isDefaultCurrencyData ? '' : currencyData.currencies[baseCurrencyIndex].name;
+
+  // const handleClick = (currency: string) => {
+  //   getCurrencyPrices(currency).then(
+  //     (data) => {
+  //       if (data === undefined) return {} // handle it
+  //       dispatch && dispatch({ type: "update", payload: data })
+  //     }
+  //   );
+  // };
+
+  const handleClick = (baseCurrency: string) => {
+    dispatch(fetchCurrenciesStart(baseCurrency));
+    console.log('Dropdown was clicked', baseCurrency);
+  }
 
   const searchRegExp = new RegExp(
     searchInput
@@ -43,8 +63,8 @@ const ControlSection = () => {
     <div className="flex flex-col">
       <CurrencyForm>
         <CurrencyForm.DropdownContainer
-          fullCurrencyName={baseCurrencyLongName}
-          shortCurrencyName={baseCurrencyShortName}
+          fullCurrencyName={baseLongName}
+          shortCurrencyName={baseShortName}
         >
           <CurrencyForm.Dropdown
             Input={
@@ -54,7 +74,7 @@ const ControlSection = () => {
               />
             }
           >
-            {map(currencyData.currencies, (currency) =>
+            {map(currencyPairs, (currency) =>
               filterCurrency(currency) ? (
                 <DropItem
                   key={currency.short}

@@ -9,11 +9,13 @@ const INITIAL_STATE: IUserDetails = {
 
 const userReducer = (
   state = INITIAL_STATE,
-  action: { type: UserActionTypes; payload: Partial<IUserDetails> }
+  action: { type: UserActionTypes; payload: any }
 ) => {
   switch (action.type) {
-    case UserActionTypes.SET_DETAILS:
+    case UserActionTypes.FETCH_DETAILS_SUCESS:
       return { ...state, ...action.payload };
+    case UserActionTypes.CLEAR_DETAILS:
+      return {};
     default:
       return state;
   }

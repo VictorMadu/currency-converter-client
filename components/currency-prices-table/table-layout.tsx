@@ -8,18 +8,24 @@ import CurrencyPrice from "../currency-price";
 import SearchInput from "../search-input";
 import TableLayout from "../table-layout";
 import ControlSection from "./control-section";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCurrencyBase,
+  selectCurrencyPairs,
+} from "../../redux/currencies/currencies.selectors";
 
 const CurrencyTableLayout = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [state] = useCurrencyContext();
+  // const [state] = useCurrencyContext();
+  const baseCurrency = useSelector(selectCurrencyBase);
+  const currencyPairs = useSelector(selectCurrencyPairs);
   const router = useRouter();
 
-  const currenciesData = state.currencies;
   const baseCurrencyIndex = findIndex(
-    currenciesData,
-    (currency) => currency.short === state.base
+    currencyPairs,
+    (currency) => currency.short === baseCurrency
   );
-  const baseCurrencyData = currenciesData[baseCurrencyIndex];
+  const baseCurrencyData = currencyPairs[baseCurrencyIndex];
 
   const searchRegExp = new RegExp(
     searchInput
@@ -28,23 +34,26 @@ const CurrencyTableLayout = () => {
       .replace(/[\\[.+*?(){|^$]/g, "\\$&")
   );
 
-  const filterCurrency = (currency: { short: string; name: string }) =>
-    currency.short !== baseCurrencyData.short &&
-    searchRegExp.test(
-      currency.short.toLowerCase() + currency.name.toLowerCase()
-    );
+  // const searchedCurrency = (currency: { short: string; name: string }) =>
+  //   currency.short !== baseCurrencyData.short &&
+  //   searchRegExp.test(
+  //     currency.short.toLowerCase() + currency.name.toLowerCase()
+  //   );
 
-  const filteredCurrencies = filter(
-    currenciesData,
-    (currency, index) =>
+  const filterSearchedCurrency = (
+    currency: { short: string; name: string },
+    index: number
+  ) => {
+    return (
       index !== baseCurrencyIndex &&
       searchRegExp.test(
         currency.short.toLowerCase() + currency.name.toLowerCase()
       )
-  );
+    );
+  };
 
   const handleClick = (base: string, quota: string) => {
-    router.push('/currency/' +  base + '-' + quota)
+    router.push("/currency/" + base + "-" + quota);
   };
 
   return (
@@ -67,9 +76,15 @@ const CurrencyTableLayout = () => {
           <div className="w-1/3 px-3 py-2 text-left">Price</div>
         </TableLayout.Header>
         <TableLayout.Main>
-          {map(filteredCurrencies, (currency) =>
-            filterCurrency(currency) ? (
-              <div className="bg-white/30 w-full" onClick = {() => handleClick(baseCurrencyData.short, currency.short)}>
+          {map(currencyPairs, (currency, index) =>
+            filterSearchedCurrency(currency, index) ? (
+              <div
+                key={currency.short}
+                className="bg-white/30 w-full"
+                onClick={() =>
+                  handleClick(baseCurrencyData.short, currency.short)
+                }
+              >
                 <TableLayout.Row key={currency.short}>
                   {/* TODO: Add full name in larger screen and increase the width of currency pair */}
                   <CurrencyPair

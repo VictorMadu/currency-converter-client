@@ -5,7 +5,7 @@ import { loginUser } from "../../api";
 import AuthForm from "../auth-form";
 import { IBase, TYPES } from "./types";
 import {useDispatch} from 'react-redux';
-import { setUserDetails } from "../../redux/user/user.actions";
+import { fetchUserDetailsSuccess } from "../../redux/user/user.actions";
 
 const Login: IBase = () => {
   const [email, setEmail] = useState("");
@@ -48,15 +48,7 @@ const Login: IBase = () => {
         handleClick={() => {
           Promise.resolve(loginUser(email, password)).then((data) => {
             if (!data) return; // handle error
-            dispatch(setUserDetails(data))
-            
-
-            // if (!localStorage) return;
-            // localStorage.setItem("id", data.id);
-            // localStorage.setItem("email", data.email);
-            // localStorage.setItem("phone", data.phone);
-            // localStorage.setItem("token", data.token);
-            // router.push(`/`);
+            dispatch(fetchUserDetailsSuccess(data))
           });
         }}
       />

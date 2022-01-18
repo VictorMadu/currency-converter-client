@@ -10,8 +10,13 @@ import IconBtn from "../icon-btn";
 import PriceChart from "../price-chart";
 import { map } from "lodash";
 import { useCurrencyConversionHook } from "./hooks";
+import { useSelector } from "react-redux";
+import { selectCurrencyPairs } from "../../redux/currencies/currencies.selectors";
 
-interface CurrencyConversionLayoutProps {}
+interface CurrencyConversionLayoutProps {
+  baseIndex: number;
+  quotaIndex: number;
+}
 
 interface ICurrency {
   short: string;
@@ -42,17 +47,14 @@ const getCurrency = (currencies: ICurrency[], index: number | null) => {
 };
 
 const CurrencyConversionLayout = (props: CurrencyConversionLayoutProps) => {
-  const { baseIndex, quotaIndex } = useCurrencyPairContext();
-  const [{ currencies }] = useCurrencyContext();
   const [switched, setSwitched] = useState(false);
+  const currencyPairs = useSelector(selectCurrencyPairs);
 
-  const currencyPair = useMemo(
-    () => [
-      getCurrency(currencies, baseIndex),
-      getCurrency(currencies, quotaIndex),
-    ],
-    [currencies, baseIndex, quotaIndex]
-  );
+  const currencyPair = [
+    getCurrency(currencyPairs, props.baseIndex),
+    getCurrency(currencyPairs, props.quotaIndex),
+  ];
+
   const customhook = useCurrencyConversionHook(
     currencyPair[0],
     currencyPair[1]
@@ -64,10 +66,10 @@ const CurrencyConversionLayout = (props: CurrencyConversionLayoutProps) => {
         <CurrencyPair
           baseFlag={""}
           quotaFlag={""}
-          baseAbbrev={getAbbrev(currencies, baseIndex)}
-          quotaAbbrev={getAbbrev(currencies, quotaIndex)}
+          baseAbbrev={getAbbrev(currencyPairs, props.baseIndex)}
+          quotaAbbrev={getAbbrev(currencyPairs, props.quotaIndex)}
         />
-        <PriceView price={getPrice(currencies, quotaIndex)} />
+        <PriceView price={getPrice(currencyPairs, props.quotaIndex)} />
       </div>
 
       <div className="flex flex-col items-center justify-center gap-y-3 mt-10">

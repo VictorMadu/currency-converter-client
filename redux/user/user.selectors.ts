@@ -5,4 +5,7 @@ const selectUser = (state: RootState) => {
   return state.user;
 };
 
-export const selectToken = createSelector([selectUser], (user) => user.token);
+export const selectUserToken = createSelector(
+  [selectUser],
+  (user) => user.token
+);

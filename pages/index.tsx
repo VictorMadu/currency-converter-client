@@ -8,12 +8,17 @@ import Main from "../components/main";
 import { ICurrencyPricesRes } from "../api/_dtypes";
 import { useCurrencyContext } from "../hooks/currency/context";
 import { useEffect } from "react";
+import {useDispatch} from 'react-redux';
+import { fetchCurrenciesSuccess } from "../redux/currencies/currencies.actions";
 
 const Home: NextPage<{ data: ICurrencyPricesRes["data"] }> = ({ data }) => {
-  const [state, dispatch] = useCurrencyContext();
-  useEffect(() => {
-    dispatch({ type: "update", payload: data });
-  }, [data, dispatch]);
+  // const [state, dispatch] = useCurrencyContext();
+  // useEffect(() => {
+  //   dispatch({ type: "update", payload: data });
+  // }, [data, dispatch]);
+
+  const dispatch = useDispatch();
+  dispatch(fetchCurrenciesSuccess(data))
 
   return (
     <Main>
