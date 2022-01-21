@@ -1,11 +1,13 @@
 import classNames from "classnames";
 import { map, some } from "lodash";
 import { currencyPairsTable, ICurrencyPairsTable } from "../../dummy";
+import { useAppSelector } from "../../redux";
+import { selectAlertsDataObj } from "../../redux/alert/alert.selectors";
 import AlertTableCard from "./alert-table-card";
 import ClearAllBtn from "./clear-all-btn";
 
 interface IAlertCardContainerProps {
-  index: number;
+  alertsKey: string;
   isOpen: boolean;
 }
 
@@ -19,6 +21,7 @@ function haveAnyTriggered(currenyPairs:Array<ICurrencyPairsTable>, index: number
 
 
 const AlertCardContainer = (props: IAlertCardContainerProps) => {
+  const alertsDataObj = useAppSelector(selectAlertsDataObj);
   return (
     <div
       className={classNames(
@@ -26,20 +29,22 @@ const AlertCardContainer = (props: IAlertCardContainerProps) => {
         !props.isOpen && "hidden opacity-0 h-0"
       )}
     >
-     {haveAnyTriggered(currencyPairsTable, props.index) && <ClearAllBtn isOpen={props.isOpen} />}
+     {/* {haveAnyTriggered(currencyPairsTable, props.index) && <ClearAllBtn isOpen={props.isOpen} />} */}
 
       <div
         className={classNames(
-          "flex space-x-4 w-full overflow-x-scroll pr-10 snap-x transition-all",
+          "flex space-x-4 w-full overflow-x-auto pr-10 snap-x transition-all",
           !props.isOpen && "hidden opacity-0"
         )}
       >
-        {map(getAlerts(currencyPairsTable, props.index), (alert) => (
+        {map(alertsDataObj[props.alertsKey], (alertData) => (
           <AlertTableCard
-            key={alert.id}
-            targetPrice={alert.targetPrice}
-            setDate={alert.setDate}
-            triggeredDate={alert.triggedDate}
+            key={alertData.id}
+            targetPrice={alertData.target_rate}
+            setTime={alertData.set_time}
+            setRate={alertData.set_rate}
+            triggeredTime={alertData.triggered_time}
+            triggeredRate={alertData.triggered_rate}
           />
         ))}
       </div>

@@ -1,13 +1,4 @@
-import { VoidFunc } from "../../types";
 
-export interface IBase {
-  (): JSX.Element;
-  title: string;
-  footer: {
-    text: string;
-    route: string;
-  }
-} 
 
 export const TYPES = {
   SIGN_UP: 'sign_up',

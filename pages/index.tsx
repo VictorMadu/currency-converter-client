@@ -1,15 +1,12 @@
-import axios from "axios";
 import type { NextPage } from "next";
 import { getCurrencyPrices } from "../api";
 import CurrencyPricesTable from "../components/currency-prices-table";
 
 import Header from "../components/header";
 import Main from "../components/main";
-import { ICurrencyPricesRes } from "../api/_dtypes";
-import { useCurrencyContext } from "../hooks/currency/context";
-import { useEffect } from "react";
+import { ICurrencyPricesRes } from "../api/_dtypes";;
 import {useDispatch} from 'react-redux';
-import { fetchCurrenciesSuccess } from "../redux/currencies/currencies.actions";
+import { fetchCurrenciesSuccess } from "../redux/currency/currency.actions";
 
 const Home: NextPage<{ data: ICurrencyPricesRes["data"] }> = ({ data }) => {
   // const [state, dispatch] = useCurrencyContext();

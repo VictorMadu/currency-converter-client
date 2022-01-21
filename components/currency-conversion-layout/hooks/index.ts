@@ -1,7 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { useAppSelector } from "../../../redux";
+import { selectCurrencyPairsObj } from "../../../redux/currency/currency.selectors";
 
 interface ICurrency {
-  short: string;
   name: string;
   prev_rate: number;
   curr_rate: number;
@@ -26,18 +27,19 @@ function onChange(
 }
 
 export function useCurrencyConversionHook(
-  baseCurrency: ICurrency,
-  quotaCurrency: ICurrency
+  baseCurrency: string,
+  quotaCurrency: string
 ) {
+  const currencyPairsObj = useAppSelector(selectCurrencyPairsObj);
   const [baseValue, setBaseValue] = useState<string>("");
   const [quotaValue, setQuotaValue] = useState<string>("");
 
   const onBaseChange = (value: string) => {
     onChange(
       value,
-      baseCurrency.curr_rate,
+      currencyPairsObj[baseCurrency].curr_rate,
       setBaseValue,
-      quotaCurrency.curr_rate,
+      currencyPairsObj[quotaCurrency].curr_rate,
       setQuotaValue
     );
   };
@@ -45,9 +47,9 @@ export function useCurrencyConversionHook(
   const quotaChange = (value: string) => {
     onChange(
       value,
-      quotaCurrency.curr_rate,
+      currencyPairsObj[quotaCurrency].curr_rate,
       setQuotaValue,
-      baseCurrency.curr_rate,
+      currencyPairsObj[baseCurrency].curr_rate,
       setBaseValue
     );
   };

@@ -1,21 +1,20 @@
 import { SwitchVerticalIcon } from "@heroicons/react/outline";
-import { ChangeEvent, useMemo, useState } from "react";
-import { useCurrencyPairContext } from "../../hooks/currency-pair-index/context";
-import { useCurrencyContext } from "../../hooks/currency/context";
+import { useState } from "react";
 import CurrencyAmountInput from "../currency-amount-input";
-import { Observable } from "../../hooks/logic";
 import CurrencyPair from "../currency-pair";
 import PriceView from "../currency-price/price-view";
 import IconBtn from "../icon-btn";
 import PriceChart from "../price-chart";
-import { map } from "lodash";
 import { useCurrencyConversionHook } from "./hooks";
 import { useSelector } from "react-redux";
-import { selectCurrencyPairs } from "../../redux/currencies/currencies.selectors";
+import { selectCurrencyPairsObj } from "../../redux/currency/currency.selectors";
+import SetAlertModal from "../set-alert-modal";
+import { useAppSelector } from "../../redux";
+import { selectUserToken } from "../../redux/user/user.selectors";
 
 interface CurrencyConversionLayoutProps {
-  baseIndex: number;
-  quotaIndex: number;
+  baseCurrency: string;
+  quotaCurrency: string;
 }
 
 interface ICurrency {
@@ -25,35 +24,13 @@ interface ICurrency {
   curr_rate: number;
 }
 
-const getAbbrev = (currencies: ICurrency[], index: number | null) => {
-  if (index === null) return "";
-  return currencies[index].short;
-};
-
-const getPrice = (currencies: ICurrency[], index: number | null) => {
-  if (index === null) return 0;
-  return currencies[index].curr_rate;
-};
-
-const currencyDefault: ICurrency = {
-  short: "",
-  name: "",
-  prev_rate: 0,
-  curr_rate: 0,
-};
-
-const getCurrency = (currencies: ICurrency[], index: number | null) => {
-  return index === null ? currencyDefault : currencies[index];
-};
-
 const CurrencyConversionLayout = (props: CurrencyConversionLayoutProps) => {
   const [switched, setSwitched] = useState(false);
-  const currencyPairs = useSelector(selectCurrencyPairs);
+  const currencyPairsObj = useAppSelector(selectCurrencyPairsObj);
+  const userToken = useAppSelector(selectUserToken);
+  const [showSetAlertModal, setShowSetAlertModal] = useState(false);
 
-  const currencyPair = [
-    getCurrency(currencyPairs, props.baseIndex),
-    getCurrency(currencyPairs, props.quotaIndex),
-  ];
+  const currencyPair = [props.baseCurrency, props.quotaCurrency];
 
   const customhook = useCurrencyConversionHook(
     currencyPair[0],
@@ -62,14 +39,23 @@ const CurrencyConversionLayout = (props: CurrencyConversionLayoutProps) => {
 
   return (
     <div className="">
+      {showSetAlertModal ? <SetAlertModal baseCurrency={props.baseCurrency} quotaCurrency={props.quotaCurrency} onClose={() => setShowSetAlertModal(false)} /> : <></>}
+      <div className="flex justify-end my-3">
+        <button
+          className="text-sm text-neutral-90/50 hover:underline"
+          onClick={() => userToken && setShowSetAlertModal((show) => !show)}
+        >
+          Set Alert
+        </button>
+      </div>
       <div className="flex justify-between items-center mt-5">
         <CurrencyPair
           baseFlag={""}
           quotaFlag={""}
-          baseAbbrev={getAbbrev(currencyPairs, props.baseIndex)}
-          quotaAbbrev={getAbbrev(currencyPairs, props.quotaIndex)}
+          baseAbbrev={props.baseCurrency}
+          quotaAbbrev={props.quotaCurrency}
         />
-        <PriceView price={getPrice(currencyPairs, props.quotaIndex)} />
+        <PriceView price={currencyPairsObj[props.quotaCurrency].curr_rate} />
       </div>
 
       <div className="flex flex-col items-center justify-center gap-y-3 mt-10">

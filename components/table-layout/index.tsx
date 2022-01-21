@@ -18,7 +18,7 @@ interface ITableLayout {
 
 const TableLayout: ITableLayout = (props) => {
   return (
-    <div className="mt-6 flex flex-col h-full gap-y-2 pb-1 overflow-hidden">
+    <div className="mt-3 flex flex-col h-full gap-y-2 pb-1 overflow-hidden">
       {props.children}
     </div>
   );

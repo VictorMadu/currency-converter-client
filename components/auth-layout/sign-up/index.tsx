@@ -4,17 +4,34 @@ import {
   LockClosedIcon,
 } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signUpUser } from "../../../api";
 import AuthForm from "../../auth-form";
-import { IBase, TYPES } from "../types";
+import { TYPES } from "../types";
 
-const SignUp: IBase = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
+  const [isSubmit, setIsSubmit] = useState(false);
   const router = useRouter();
+
+  const handleClick = async () => {
+    const data = await signUpUser(email, phone, password);
+    if (!data) return // TODO: display error from server
+    
+  }
+
+  useEffect(() => {
+    async function handleSubmit () {
+       const data = await signUpUser(email, phone, password);
+       if (!data) return // TODO: display error from server
+       router.push(`/auth/${TYPES.LOGIN}`)
+     }
+ 
+     if (isSubmit) handleSubmit()
+   }, [email, isSubmit, password, phone, router])
+ 
 
   return (
     <AuthForm>
@@ -64,20 +81,10 @@ const SignUp: IBase = () => {
       </div>
       <AuthForm.SubmitBtn
         text="Sign Up"
-        handleClick={() => {
-          signUpUser(email, phone, password).then((data) => {
-            if (data) router.push(`/auth/${TYPES.LOGIN}`);
-          });
-        }}
+        handleClick={() => setIsSubmit(true)}
       />
     </AuthForm>
   );
-};
-
-SignUp.title = "Sign Up";
-SignUp.footer = {
-  text: "Don't have an account yet",
-  route: TYPES.LOGIN
 };
 
 export default SignUp;

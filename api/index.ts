@@ -1,9 +1,10 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   ICurrencyPricesRes,
   ICurrenciesAlertsRes,
   ISignUpRes,
   ILoginRes,
+  ICreateCurrencyAlertRes,
 } from "./_dtypes";
 import {
   getCurrenciesAlertQueryUrlBuilder,
@@ -24,23 +25,28 @@ export const getCurrencyPrices = async (baseCurrency?: string) => {
 
 export const getCurrenciesAlerts = async (
   token: string,
-  base: string | undefined,
+  bases: string[] | undefined,
   quotas: string[] | undefined,
   type: "pending" | "triggered" | undefined
 ) => {
   const url = `${BASE_URL}/currency/get-alerts${getCurrenciesAlertQueryUrlBuilder(
-    base,
+    bases,
     quotas,
     type
   )}`;
 
-  const res = await axios.get<ICurrenciesAlertsRes>(url, {
+  console.log("getALertsUrl", url);
+  console.log("userToken", token);
+
+  const res = await axios.get<any, AxiosResponse<ICurrenciesAlertsRes>>(url, {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
   if (!res.data.success)
-    return alert("Error getting alerts. Trying logging in your account");
+    return (
+      alert && alert("Error getting alerts. Trying logging in your account")
+    );
 
   return res.data.data;
 };
@@ -53,7 +59,7 @@ export const signUpUser = async (email: string, phone: string, pwd: string) => {
     pwd,
   });
 
-  if (!res.data.success) return alert(res.data);
+  if (!res.data.success) return alert && alert(res.data);
   return res.data.data;
 };
 
@@ -64,6 +70,28 @@ export const loginUser = async (email: string, pwd: string) => {
     pwd,
   });
 
-  if (!res.data.success) return alert(res.data.data);
+  if (!res.data.success) return alert && alert(res.data.data);
   return res.data.data;
+};
+
+export const createCurrencyAlert = async (
+  token: string,
+  base: string,
+  quota: string,
+  target_rate: number
+) => {
+  const url = `${BASE_URL}/currency/post-alert`;
+  const res = (await axios({
+    method: "POST",
+    url,
+    data: {
+      base,
+      quota,
+      target_rate,
+    },
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  })) as AxiosResponse<ICreateCurrencyAlertRes>;
+  return res.data.success;
 };

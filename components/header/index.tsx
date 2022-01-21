@@ -8,10 +8,6 @@ import { selectUserToken } from "../../redux/user/user.selectors";
 import { clearUserDetails } from "../../redux/user/user.actions";
 
 const Header = () => {
-  // const [token, setToken] = useState<string | null>('');
-  // useEffect(() => {
-  //   localStorage && setToken(localStorage.getItem("token"))
-  // }, [])
   const dispatch = useDispatch();
   const token = useSelector(selectUserToken);
 

@@ -1,31 +1,24 @@
-import { map, filter, findIndex } from "lodash";
+import {  map } from "lodash";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { currencyPairsTable } from "../../dummy";
-import { useCurrencyContext } from "../../hooks/currency/context";
+import React, { useState } from "react";
 import CurrencyPair from "../currency-pair";
 import CurrencyPrice from "../currency-price";
 import SearchInput from "../search-input";
 import TableLayout from "../table-layout";
 import ControlSection from "./control-section";
-import { useSelector, useDispatch } from "react-redux";
 import {
   selectCurrencyBase,
-  selectCurrencyPairs,
-} from "../../redux/currencies/currencies.selectors";
+  selectCurrencyLists,
+  selectCurrencyPairsObj,
+} from "../../redux/currency/currency.selectors";
+import { useAppSelector } from "../../redux";
 
 const CurrencyTableLayout = () => {
   const [searchInput, setSearchInput] = useState("");
-  // const [state] = useCurrencyContext();
-  const baseCurrency = useSelector(selectCurrencyBase);
-  const currencyPairs = useSelector(selectCurrencyPairs);
+  const baseCurrency = useAppSelector(selectCurrencyBase);
+  const currencyLists = useAppSelector(selectCurrencyLists);
+  const currencyPairs = useAppSelector(selectCurrencyPairsObj);
   const router = useRouter();
-
-  const baseCurrencyIndex = findIndex(
-    currencyPairs,
-    (currency) => currency.short === baseCurrency
-  );
-  const baseCurrencyData = currencyPairs[baseCurrencyIndex];
 
   const searchRegExp = new RegExp(
     searchInput
@@ -34,20 +27,11 @@ const CurrencyTableLayout = () => {
       .replace(/[\\[.+*?(){|^$]/g, "\\$&")
   );
 
-  // const searchedCurrency = (currency: { short: string; name: string }) =>
-  //   currency.short !== baseCurrencyData.short &&
-  //   searchRegExp.test(
-  //     currency.short.toLowerCase() + currency.name.toLowerCase()
-  //   );
-
-  const filterSearchedCurrency = (
-    currency: { short: string; name: string },
-    index: number
-  ) => {
+  const filterSearchedCurrency = (currency: string) => {
     return (
-      index !== baseCurrencyIndex &&
+      currency !== baseCurrency &&
       searchRegExp.test(
-        currency.short.toLowerCase() + currency.name.toLowerCase()
+        currency.toLowerCase() + currencyPairs[currency].name.toLowerCase()
       )
     );
   };
@@ -76,34 +60,32 @@ const CurrencyTableLayout = () => {
           <div className="w-1/3 px-3 py-2 text-left">Price</div>
         </TableLayout.Header>
         <TableLayout.Main>
-          {map(currencyPairs, (currency, index) =>
-            filterSearchedCurrency(currency, index) ? (
+          {map(currencyLists, (currency: string) =>
+            filterSearchedCurrency(currency) ? (
               <div
-                key={currency.short}
+                key={currency}
                 className="bg-white/30 w-full"
-                onClick={() =>
-                  handleClick(baseCurrencyData.short, currency.short)
-                }
+                onClick={() => handleClick(baseCurrency, currency)}
               >
-                <TableLayout.Row key={currency.short}>
+                <TableLayout.Row>
                   {/* TODO: Add full name in larger screen and increase the width of currency pair */}
                   <CurrencyPair
                     baseFlag={"TODO IMPLEMENT FLAG"}
                     quotaFlag={"TODO IMPLEMENT FLAG"}
-                    baseAbbrev={baseCurrencyData.short}
-                    quotaAbbrev={currency.short}
+                    baseAbbrev={baseCurrency}
+                    quotaAbbrev={currency}
                     styleWidth="w-1/2"
                   />
 
                   <CurrencyPrice
-                    prevPrice={currency.prev_rate}
-                    currPrice={currency.curr_rate}
+                    prevPrice={currencyPairs[currency].prev_rate}
+                    currPrice={currencyPairs[currency].curr_rate}
                     styleWidth="w-1/2"
                   />
                 </TableLayout.Row>
               </div>
             ) : (
-              <></>
+              <React.Fragment key={currency} />
             )
           )}
         </TableLayout.Main>

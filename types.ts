@@ -7,3 +7,7 @@ export type Func<T extends any[] = any[], U extends any = any> = (
 export type VoidFunc<T extends any[] = any[]> = Func<T, void>;
 
 export type RequiredProps<T extends {}> = { [K in keyof T]-?: T[K] };
+
+export type PromiseReturnType<T> = T extends Func<any[], Promise<infer O>>
+  ? O
+  : never;

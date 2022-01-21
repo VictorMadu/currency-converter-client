@@ -1,21 +1,23 @@
 import UserActionTypes from "./user.types";
-import { IUserDetails } from "./_dtypes";
+import { IUserDispatch, IUserState } from "./_dtypes";
 
-const INITIAL_STATE: IUserDetails = {
-  email: "",
-  phone: "",
-  token: "",
+const INITIAL_STATE: IUserState = {
+  data: {
+    email: "",
+    phone: "",
+    token: "",
+  },
 };
 
 const userReducer = (
   state = INITIAL_STATE,
-  action: { type: UserActionTypes; payload: any }
-) => {
+  action: IUserDispatch
+): IUserState => {
   switch (action.type) {
-    case UserActionTypes.FETCH_DETAILS_SUCESS:
-      return { ...state, ...action.payload };
+    case UserActionTypes.LOGIN_IN_SUCCESS:
+      return { ...state, data: { ...action.payload } };
     case UserActionTypes.CLEAR_DETAILS:
-      return {};
+      return INITIAL_STATE;
     default:
       return state;
   }

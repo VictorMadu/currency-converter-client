@@ -10,7 +10,7 @@ export interface IMain {
 
 const Main: IMain = (props) => {
   return (
-    <div className="overflow-y-scroll h-full shrink pb-48">
+    <div className="overflow-y-auto h-full shrink pb-48">
       {props.children}
     </div>
   );

@@ -1,7 +1,8 @@
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import currenciesReducer from "./currencies/currencies.reducers";
+import alertsReducer from "./alert/alert.reducers";
+import currenciesReducer from "./currency/currency.reducers";
 import userReducer from "./user/user.reducers";
 
 const persistConfig = {
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   currencies: currenciesReducer,
+  alerts: alertsReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

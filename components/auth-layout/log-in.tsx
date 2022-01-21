@@ -1,16 +1,35 @@
 import { UserIcon, LockClosedIcon } from "@heroicons/react/outline";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginUser } from "../../api";
 import AuthForm from "../auth-form";
-import { IBase, TYPES } from "./types";
+import { TYPES } from "./types";
 import {useDispatch} from 'react-redux';
-import { fetchUserDetailsSuccess } from "../../redux/user/user.actions";
+import { loginStart, loginSuccess } from "../../redux/user/user.actions";
+import { useRouter } from "next/router";
+import { useAppDispatch, useAppSelector } from "../../redux";
+import { selectUserToken } from "../../redux/user/user.selectors";
 
-const Login: IBase = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch =  useDispatch();
+  const [pwd, setPwd] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
+  const userToken = useAppSelector(selectUserToken)
+  const dispatch =  useAppDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+   async function handleSubmit () {
+      const data = await loginUser(email, pwd);
+      if (!data) return // TODO: display error from server
+      dispatch(loginSuccess(data))
+    }
+
+    if (isSubmit) handleSubmit()
+  }, [dispatch, email, pwd, isSubmit])
+
+  useEffect(() => {
+    if (userToken)router.back()
+  }, [userToken, router])
 
   return (
     <AuthForm>
@@ -37,29 +56,24 @@ const Login: IBase = () => {
           Input={
             <AuthForm.PwdInput
               id={"password"}
-              value={password}
-              onInputChange={setPassword}
+              value={pwd}
+              onInputChange={setPwd}
             />
           }
         />
       </div>
       <AuthForm.SubmitBtn
         text="Sign In"
-        handleClick={() => {
-          Promise.resolve(loginUser(email, password)).then((data) => {
-            if (!data) return; // handle error
-            dispatch(fetchUserDetailsSuccess(data))
-          });
-        }}
+        handleClick={() => setIsSubmit(true)}
       />
     </AuthForm>
   );
 };
 
-Login.title = "Log In";
-Login.footer = {
-  text: "Have an account already",
-  route: TYPES.SIGN_UP,
-};
+// Login.title = "Log In";
+// Login.footer = {
+//   text: "Have an account already",
+//   route: TYPES.SIGN_UP,
+// };
 
 export default Login;

@@ -3,23 +3,16 @@ import Abbrev from "./abbrev";
 import Input from "./input";
 import { numberWithCommas, numStrClean, Observable } from "../../hooks/logic";
 
-interface ICurrency {
-  short: string;
-  name: string;
-  prev_rate: number;
-  curr_rate: number;
-}
-
 interface ICurrencyAmountInput {
   inverted?: boolean;
   value: string;
-  currency: ICurrency
+  currency: string
   onInputChange: (value: string) => void;
 }
 
 const CurrencyAmountInput = (props: ICurrencyAmountInput) => {
 
-  const CurrencyAbbrev = <Abbrev text={props.currency.short} />;
+  const CurrencyAbbrev = <Abbrev text={props.currency} />;
   const CurrencyInput = (
     <Input
       value={props.value}

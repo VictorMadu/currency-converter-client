@@ -2,26 +2,25 @@ import CurrencyForm from "../currency-form";
 import { findIndex, map, filter, isEqual } from "lodash";
 import DropItem from "./drop-item";
 import { getCurrencyPrices } from "../../api";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectBaseCurrencyIndex,
-  selectCurrencyPairs,
-} from "../../redux/currencies/currencies.selectors";
-import { fetchCurrenciesStart } from "../../redux/currencies/currencies.actions";
+import { fetchCurrenciesStart } from "../../redux/currency/currency.actions";
+import { useAppDispatch, useAppSelector } from "../../redux";
+import { selectCurrencyBase, selectCurrencyLists, selectCurrencyPairsObj } from "../../redux/currency/currency.selectors";
 // import { defaultState, useCurrencyContext } from "../../hooks/currency/context";
 
 const ControlSection = () => {
   const [searchInput, setSearchInput] = useState("");
-  const currencyPairs = useSelector(selectCurrencyPairs);
-  const baseCurrencyIndex = useSelector(selectBaseCurrencyIndex);
-  const dispatch  = useDispatch()
+  const baseCurrency = useAppSelector(selectCurrencyBase);
+  const currencyLists = useAppSelector(selectCurrencyLists);
+  const currencyPairs = useAppSelector(selectCurrencyPairsObj);
+  const dispatch  = useAppDispatch()
 
-  const baseShortName =
-    baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].short : "";
+  // const baseShortName =
+  //   baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].short : "";
 
-  const baseLongName =
-    baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].name : "";
+  // const baseLongName =
+  //   baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].name : "";
 
   // const [currencyData, dispatch] = useCurrencyContext();
   // const isDefaultCurrencyData = isEqual(currencyData,defaultState);
@@ -44,7 +43,6 @@ const ControlSection = () => {
 
   const handleClick = (baseCurrency: string) => {
     dispatch(fetchCurrenciesStart(baseCurrency));
-    console.log('Dropdown was clicked', baseCurrency);
   }
 
   const searchRegExp = new RegExp(
@@ -54,17 +52,21 @@ const ControlSection = () => {
       .replace(/[\\[.+*?(){|^$]/g, "\\$&")
   );
 
-  const filterCurrency = (currency: { short: string; name: string }) =>
-    searchRegExp.test(
-      currency.short.toLowerCase() + currency.name.toLowerCase()
+  const filterSearchedCurrency = (currency: string) => {
+    return (
+      currency !== baseCurrency &&
+      searchRegExp.test(
+        currency.toLowerCase() + currencyPairs[currency].name.toLowerCase()
+      )
     );
+  };
 
   return (
     <div className="flex flex-col">
       <CurrencyForm>
         <CurrencyForm.DropdownContainer
-          fullCurrencyName={baseLongName}
-          shortCurrencyName={baseShortName}
+          fullCurrencyName={currencyPairs[baseCurrency].name}
+          shortCurrencyName={baseCurrency}
         >
           <CurrencyForm.Dropdown
             Input={
@@ -74,16 +76,16 @@ const ControlSection = () => {
               />
             }
           >
-            {map(currencyPairs, (currency) =>
-              filterCurrency(currency) ? (
+            {map(currencyLists, (currency: string) =>
+              filterSearchedCurrency(currency) ? (
                 <DropItem
-                  key={currency.short}
-                  short={currency.short}
-                  full={currency.name}
+                  key={currency}
+                  short={currency}
+                  full={currencyPairs[currency].name}
                   handleClick={handleClick}
                 />
               ) : (
-                <></>
+                <React.Fragment key={currency} />
               )
             )}
           </CurrencyForm.Dropdown>
