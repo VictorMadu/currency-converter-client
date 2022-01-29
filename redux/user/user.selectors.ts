@@ -11,3 +11,13 @@ export const selectUserToken = createSelector(
   [selectUserData],
   (userData) => userData.token
 );
+
+export const selectUserAppTheme = createSelector(
+  [selectUserData],
+  (userData) => userData.app_theme
+);
+
+export const selectUserNotifyOpts = createSelector(
+  [selectUserData],
+  (userData) => userData.notify
+);

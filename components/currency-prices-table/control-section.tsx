@@ -16,31 +16,6 @@ const ControlSection = () => {
   const currencyPairs = useAppSelector(selectCurrencyPairsObj);
   const dispatch  = useAppDispatch()
 
-  // const baseShortName =
-  //   baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].short : "";
-
-  // const baseLongName =
-  //   baseCurrencyIndex >= 0 ? currencyPairs[baseCurrencyIndex].name : "";
-
-  // const [currencyData, dispatch] = useCurrencyContext();
-  // const isDefaultCurrencyData = isEqual(currencyData,defaultState);
-
-  // const baseCurrencyShortName = currencyData.base;
-  // const baseCurrencyIndex = findIndex(
-  //   currencyData.currencies,
-  //   (currency) => currency.short === baseCurrencyShortName
-  // );
-  // const baseCurrencyLongName = isDefaultCurrencyData ? '' : currencyData.currencies[baseCurrencyIndex].name;
-
-  // const handleClick = (currency: string) => {
-  //   getCurrencyPrices(currency).then(
-  //     (data) => {
-  //       if (data === undefined) return {} // handle it
-  //       dispatch && dispatch({ type: "update", payload: data })
-  //     }
-  //   );
-  // };
-
   const handleClick = (baseCurrency: string) => {
     dispatch(fetchCurrenciesStart(baseCurrency));
   }

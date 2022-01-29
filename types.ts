@@ -1,5 +1,7 @@
 export type OrWithArr<T extends any> = T | T[];
 
+export type OrWithPromise<T extends any> = T | Promise<T>;
+
 export type Func<T extends any[] = any[], U extends any = any> = (
   ...args: T
 ) => U;

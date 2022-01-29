@@ -126,6 +126,13 @@ export const loginSchema = {
         email: { type: "string" },
         phone: { type: "string" },
         token: { type: "string" },
+        app_theme: { enum: ["light", "dark"] },
+        notify_opts: {
+          type: "array",
+          items: { enum: ["app", "phone", "email"] },
+          minItems: 1,
+          uniqueItems: true,
+        },
       },
       required: ["id", "email", "phone", "token"],
       additionalProperties: false,
@@ -141,5 +148,35 @@ export const createCurrencyAlertSchema = {
     success: { type: "boolean" },
   },
   required: ["success"],
+  additionalProperties: false,
+} as const;
+
+export const changeSettingsSchema = {
+  type: "object",
+  properties: {
+    success: { type: "boolean" },
+    data: {
+      type: "object",
+      properties: {
+        modifiedCount: { type: "number" },
+        user: {
+          type: "object",
+          properties: {
+            app_theme: { enum: ["light", "dark"] },
+            notify_opts: {
+              type: "array",
+              items: { enum: ["app", "phone", "email"] },
+              minItems: 1,
+              uniqueItems: true,
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+      required: ["modifiedCount"],
+      additionalProperties: false,
+    },
+  },
+  required: ["success", "data"],
   additionalProperties: false,
 } as const;

@@ -6,6 +6,8 @@ const INITIAL_STATE: IUserState = {
     email: "",
     phone: "",
     token: "",
+    notify: [],
+    app_theme: "light",
   },
 };
 
@@ -15,7 +17,9 @@ const userReducer = (
 ): IUserState => {
   switch (action.type) {
     case UserActionTypes.LOGIN_IN_SUCCESS:
-      return { ...state, data: { ...action.payload } };
+      return { ...state, data: { ...state.data, ...action.payload } };
+    case UserActionTypes.CHANGE_SETTING_SUCCESS:
+      return { ...state, data: { ...state.data, ...action.payload } };
     case UserActionTypes.CLEAR_DETAILS:
       return INITIAL_STATE;
     default:

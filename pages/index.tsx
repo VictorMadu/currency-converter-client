@@ -5,29 +5,32 @@ import CurrencyPricesTable from "../components/currency-prices-table";
 import Header from "../components/header";
 import Main from "../components/main";
 import { ICurrencyPricesRes } from "../api/_dtypes";;
-import {useDispatch} from 'react-redux';
-import { fetchCurrenciesSuccess } from "../redux/currency/currency.actions";
+import { fetchCurrenciesStart, fetchCurrenciesSuccess } from "../redux/currency/currency.actions";
+import { useAppDispatch, useAppSelector } from "../redux";
+import { selectCurrenciesData, selectCurrencyBase } from "../redux/currency/currency.selectors";
+import { useEffect } from "react";
 
-const Home: NextPage<{ data: ICurrencyPricesRes["data"] }> = ({ data }) => {
-  // const [state, dispatch] = useCurrencyContext();
-  // useEffect(() => {
-  //   dispatch({ type: "update", payload: data });
-  // }, [data, dispatch]);
+const Home: NextPage<{ data: ICurrencyPricesRes["data"] }> = () => {
+  const currencyBase = useAppSelector(selectCurrencyBase)
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
-  dispatch(fetchCurrenciesSuccess(data))
+  useEffect(() => {
+    if (!currencyBase)
+    dispatch(fetchCurrenciesStart())
+  }, [dispatch, currencyBase])
 
   return (
     <Main>
       <Header />
-      <CurrencyPricesTable />
+      {currencyBase ? <CurrencyPricesTable /> : <></>}
     </Main>
   );
 };
 
-export async function getServerSideProps() {
-  const data = await getCurrencyPrices();
-  return { props: { data } };
-}
+// export async function getServerSideProps() {
+//   const data = await getCurrencyPrices();
+//   return { props: { data } };
+// }
+
 
 export default Home;

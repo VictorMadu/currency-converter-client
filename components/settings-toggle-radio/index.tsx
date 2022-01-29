@@ -1,13 +1,25 @@
+import { useEffect, useState } from "react";
 import { VoidFunc } from "../../types";
 
 interface ISettingsToggleRadioProps {
   placeholder?: string;
   id: string;
-  onClick: VoidFunc;
+  initCheck: boolean;
+  onCheckChanged: (isChecked: boolean) => void;
 }
 
 const SettingsToggleRadio = (props: ISettingsToggleRadioProps) => {
-  let toggleChecked = true;
+  const [checked, setChecked] = useState(props.initCheck);
+
+
+
+  const handleClick = () => {
+    const newChecked = !checked;
+
+  props.onCheckChanged(newChecked);
+    setChecked(newChecked)
+  }
+
 
   return (
     <label htmlFor={props.id} className="inline-flex items-center gap-x-1.5">
@@ -15,10 +27,8 @@ const SettingsToggleRadio = (props: ISettingsToggleRadioProps) => {
         type="radio"
         name={props.id}
         id={props.id}
-        onClick={(event) => {
-          toggleChecked = !toggleChecked;
-          props.onClick(event);
-        }}
+        checked={checked}
+        onClick={handleClick}
       />
       <span>{props.placeholder}</span>
     </label>
