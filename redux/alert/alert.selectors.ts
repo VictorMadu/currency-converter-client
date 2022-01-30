@@ -2,6 +2,7 @@ import { RootState } from "../_dtypes";
 import { createSelector } from "reselect";
 import { reduce, keysIn } from "lodash";
 import { IAlertData } from "./_dtypes";
+import { combineBaseAndQuota, setAlertsKeyToBaseAndQuota } from "./alert.utils";
 
 const selectAlerts = (state: RootState) => state.alerts;
 
@@ -15,12 +16,7 @@ export const selectAlertsDataObj = createSelector(
   (alertsDataArr) =>
     reduce(
       alertsDataArr,
-      (accObj, alertsData) => {
-        // accObj.set(alertsData.id, alertsData.alerts);
-        accObj[alertsData.id.base + " " + alertsData.id.quota] =
-          alertsData.alerts;
-        return accObj;
-      },
+      (accObj, alertsData) => setAlertsKeyToBaseAndQuota(accObj, alertsData),
       {} as Record<string, IAlertData["alerts"]>
     )
 );

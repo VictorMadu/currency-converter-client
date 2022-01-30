@@ -1,6 +1,7 @@
 import { currencyPairsTable } from "../../dummy";
 import { useAppSelector } from "../../redux";
 import { selectAlertsDataObj } from "../../redux/alert/alert.selectors";
+import { splitBaseAndQuota } from "../../redux/alert/alert.utils";
 import { selectCurrencyPairsObj } from "../../redux/currency/currency.selectors";
 import { RequiredProps } from "../../types";
 import currencyPair from "../currency-pair";
@@ -10,23 +11,26 @@ import TableLayout from "../table-layout";
 import ToggleBtn from "../toggle-btn";
 
 interface ICurrencyPairProps {
-  alertsKey: string;
+  base: string;
+  quota: string;
   isOpen: boolean;
   handleToggleOpen: () => void;
 }
 
 const PriceContainer = (props: ICurrencyPairProps) => {
   const currencyPairsObj = useAppSelector(selectCurrencyPairsObj);
-  const [baseCurrency, quotaCurrency] = props.alertsKey.split(" ") as [string, string];
+  console.log("currencyPairsObj", currencyPairsObj)
+  console.log("baseCurrency", props.base)
+  console.log("quotaCurrency", props.quota)
 
-  const prevPrice = currencyPairsObj ? (
-    currencyPairsObj[quotaCurrency].prev_rate /
-    currencyPairsObj[baseCurrency].prev_rate
+  const prevPrice = Object.keys(currencyPairsObj).length ? (
+    currencyPairsObj[props.quota].prev_rate /
+    currencyPairsObj[props.base].prev_rate
   ).toFixed(6) : (0).toFixed(6);
 
-  const currPrice = currencyPairsObj ? (
-    currencyPairsObj[quotaCurrency].curr_rate /
-    currencyPairsObj[baseCurrency].curr_rate
+  const currPrice = Object.keys(currencyPairsObj).length ? (
+    currencyPairsObj[props.quota].curr_rate /
+    currencyPairsObj[props.base].curr_rate
   ).toFixed(6) : (0).toFixed(6);
 
   return (
@@ -40,10 +44,10 @@ const PriceContainer = (props: ICurrencyPairProps) => {
           {/* Some for the part of alert. But compare and contrast whether to choose stateless over statefull and props over state. */}
 
           <CurrencyPair
-            baseFlag={baseCurrency}
-            quotaFlag={quotaCurrency}
-            baseAbbrev={baseCurrency}
-            quotaAbbrev={quotaCurrency}
+            baseFlag={props.base}
+            quotaFlag={props.quota}
+            baseAbbrev={props.base}
+            quotaAbbrev={props.quota}
             styleWidth="w-1/2"
           />
 

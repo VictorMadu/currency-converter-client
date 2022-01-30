@@ -75,9 +75,15 @@ export class CurrencyWS {
   }
 
   updatePriceUpdateSetting(payload: { base?: string; quotas?: string[] }) {
-    this.ws.send(
-      JSON.stringify({ type: "price-update-settings", data: payload })
-    );
+    // TODO: If another request comes in cancel this request. Some sort of takeLastest
+    const id = setInterval(() => {
+      if (this.ws.readyState === this.ws.OPEN) {
+        this.ws.send(
+          JSON.stringify({ type: "price-update-settings", data: payload })
+        );
+        clearInterval(id);
+      }
+    }, 100);
   }
 
   close() {

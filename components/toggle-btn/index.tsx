@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from "@heroicons/react/outline";
+import { ChevronUpIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { VoidFunc } from "../../types";
 
@@ -18,7 +18,7 @@ const ToggleBtn = (props: IToggleBtnProps) => {
       )}
       onClick={props.onClick }
     >
-      <ChevronDownIcon className="w-4 h-4" />
+      <ChevronUpIcon className="w-4 h-4" />
     </button>
   );
 };

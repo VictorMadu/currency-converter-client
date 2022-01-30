@@ -1,10 +1,9 @@
 import classNames from "classnames";
 import { map, some } from "lodash";
-import { currencyPairsTable, ICurrencyPairsTable } from "../../dummy";
+import {  ICurrencyPairsTable } from "../../dummy";
 import { useAppSelector } from "../../redux";
 import { selectAlertsDataObj } from "../../redux/alert/alert.selectors";
 import AlertTableCard from "./alert-table-card";
-import ClearAllBtn from "./clear-all-btn";
 
 interface IAlertCardContainerProps {
   alertsKey: string;
@@ -26,7 +25,7 @@ const AlertCardContainer = (props: IAlertCardContainerProps) => {
     <div
       className={classNames(
         "bg-neutral-300 shadow-inner flex flex-col px-2 pt-1 py-3 transition-all duration-300",
-        !props.isOpen && "hidden opacity-0 h-0"
+        !props.isOpen && "hidden opacity-0 h-0" 
       )}
     >
      {/* {haveAnyTriggered(currencyPairsTable, props.index) && <ClearAllBtn isOpen={props.isOpen} />} */}

@@ -5,6 +5,8 @@ import PriceContainer from "./price-container"
 
 interface IAlertRow {
   alertsKey: string;
+  base: string;
+  quota: string;
 }
 
 const AlertRow = (props: IAlertRow) => {
@@ -13,7 +15,7 @@ const AlertRow = (props: IAlertRow) => {
     <div
     className="mb-2 border border-neutral-400/30 shadow-md bg-white/30"
   >
-    <PriceContainer alertsKey={props.alertsKey} isOpen={isOpen} handleToggleOpen={() => setIsOpen(isOpen => !isOpen)} />
+    <PriceContainer base={props.base} quota={props.quota} isOpen={isOpen} handleToggleOpen={() => setIsOpen(isOpen => !isOpen)} />
     <AlertCardContainer alertsKey={props.alertsKey}  isOpen={isOpen}  />
 
   </div>

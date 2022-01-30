@@ -1,19 +1,13 @@
 import { FilterIcon } from "@heroicons/react/outline";
 import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
   useEffect,
   useState,
 } from "react";
-import { getCurrenciesAlerts } from "../../api";
-import { IAction, useCurrenciesAlert } from "../../hooks/alert/context";
 import Dropdown from "../dropdown";
 import ToggleBtn from "../toggle-btn";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAlertsStart } from "../../redux/alert/alert.actions";
 import { selectUserToken } from "../../redux/user/user.selectors";
-import { capitalize } from "lodash";
 
 interface IAlertFilterDropdownProps {}
 

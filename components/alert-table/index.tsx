@@ -4,12 +4,10 @@ import AlertFilterDropdown from "../alert-filter-dropdown";
 import TableLayout from "../table-layout";
 import AlertRow from "./alert-row";
 import SearchInput from "../search-input";
-import {
-  selectAlertsDataObjKeys,
-} from "../../redux/alert/alert.selectors";
+import { selectAlertsDataObjKeys } from "../../redux/alert/alert.selectors";
 import { useAppSelector } from "../../redux";
 import { selectCurrencyPairsObj } from "../../redux/currency/currency.selectors";
-import SetAlertModal from "../set-alert-modal";
+import { splitBaseAndQuota } from "../../redux/alert/alert.utils";
 
 const AlertTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -27,17 +25,18 @@ const AlertTable = () => {
     baseCurrency: string,
     quotaCurrency: string
   ) => {
-    return (baseCurrency && quotaCurrency &&
-      searchRegExp.test(baseCurrency.toLowerCase()) ||
+    return (
+      (baseCurrency &&
+        quotaCurrency &&
+        searchRegExp.test(baseCurrency.toLowerCase())) ||
       searchRegExp.test(quotaCurrency.toLowerCase()) ||
       searchRegExp.test(currencyPairsObj[baseCurrency].name.toLowerCase()) ||
       searchRegExp.test(currencyPairsObj[quotaCurrency].name.toLowerCase())
     );
   };
 
-
   return (
-    <TableLayout>   
+    <TableLayout>
       <div className="flex justify-between items-end gap-x-[5%]">
         <AlertFilterDropdown />
         <SearchInput
@@ -52,9 +51,11 @@ const AlertTable = () => {
       <TableLayout.Container>
         <TableLayout.Main>
           {map(alertsDataObjKeys, (alertsDataKey) => {
-            const [baseCurrency, quotaCurrency] = alertsDataKey.split(" ");
+            const [baseCurrency, quotaCurrency] = splitBaseAndQuota(
+              alertsDataKey
+            ) as [string, string];
             return filterSearchedCurrency(baseCurrency, quotaCurrency) ? (
-              <AlertRow key={alertsDataKey} alertsKey={alertsDataKey} />
+              <AlertRow key={alertsDataKey} alertsKey={alertsDataKey} base={baseCurrency} quota={quotaCurrency} />
             ) : (
               <React.Fragment key={alertsDataKey} />
             );
